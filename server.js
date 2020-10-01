@@ -1,6 +1,7 @@
 const fs = require("fs");
 const express = require("express");
 const path = require("path");
+const { isBuffer } = require("util");
 
 // Sets up the Express App
 // =============================================================
@@ -47,8 +48,42 @@ app.get("/api/notes", (req, res) => {
 
 // Starts the server to begin listening
 
-app.listen(PORT, function () {
-  console.log(`Server Listening on: ${PORT}`);
+app.post("api/notes", (req, res) => {
+  console.log(req.body);
+  if (!req.body.name || !req.body.grade) {
+    return res.status(400).json({
+      error: true,
+      data: null,
+      message: "Invalid note.",
+    });
+  }
+  fs.readFile("db/db.json", "utf-8", (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({
+        error: true,
+        data: null,
+        message: "Unable to retrieve note.",
+      });
+    }
+    const updatedData = JSON.parse(data);
+    updatedData.push(req.body);
+    fs.writeFile("db/db.json", JSON.stringify(updatedData), (err) => {
+      if (err) {
+        console.lof(err);
+        return res.status(500).json({
+          error: true,
+          data: null,
+          message: "Unable to save note.",
+        });
+      }
+      res.json({
+        error: false,
+        data: updatedData,
+        message: "Successfully added a new note.",
+      });
+    });
+  });
 });
 
 // app.post("/api/notes", function (req, res) {
@@ -68,5 +103,9 @@ app.listen(PORT, function () {
 //     // throw err;
 //   // }
 // });
+
+app.listen(PORT, function () {
+  console.log(`Server Listening on: ${PORT}`);
+});
 
 // app.delete("/api/notes", function)
