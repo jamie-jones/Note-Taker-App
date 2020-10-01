@@ -15,88 +15,44 @@ app.use(express.static("public"));
 
 // Basic route that sends the user first to the AJAX Page
 app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "/index.html"));
 });
 
 app.get("/notes", function (req, res) {
-  res.sendFile(path.join(__dirname, "public", "notes.html"));
+  res.sendFile(path.join(__dirname, "public", "/notes.html"));
 });
 
-// API ROUTES
-// app.get("/api/notes", (req, res) => {
-//   fs.readFile("");
-//   return res.sendFile(path.join(__dirname, "db/db.json"));
-// });
-
+API ROUTES
 app.get("/api/notes", (req, res) => {
-  fs.readFile("db/db.json", "utf-8", (err, data) => {
-    if (err) {
-      //       console.log(err);
-      return res.status(500).json({
-        error: true,
-        data: null,
-        messages: "Unable to retrieve note.",
-      });
-    }
-    res.json({
-      error: false,
-      data: JSON.parse(data),
-      messages: "Successfully retrieved note.",
-    });
-  });
+  fs.readFile("");
+  return res.sendFile(path.join(__dirname, "db/db.json"));
 });
 
-// Starts the server to begin listening
-
-app.post("api/notes", (req, res) => {
-  // console.log(req.body);
-  fs.readFile("./db/db.json", "utf-8", (err, data) => {
-    if (err) {
-      return res.status(500).json({
-        error: true,
-        data: null,
-        message: "Unable to retrieve note.",
-      });
-    }
-    // console.log(data);
-    const updatedData = JSON.parse(data);
-    updatedData.push(req.body);
-    // console.log(updatedData);
-    fs.writeFile("./db/db.json", JSON.stringify(updatedData), (err) => {
-      if (err) {
-        return res.status(500).json({
-          error: true,
-          data: null,
-          message: "Unable to save new note.",
-        });
-      }
-      res.json({
-        error: false,
-        data: updatedData,
-        message: "Successfully added new note.",
-      });
-    });
-  });
-});
+// APP.POST
+app.post("/api/notes", (req,res) => {
+  writtenNotes = fs.readFile("./db/db.json", "utf-8");
+  res.sendFile("./db/db.json", "utf-8");
+})
 
 // app.post("/api/notes", function (req, res) {
-//   // try {
-//     notesData = fs.readFileSync("./db/db.json", "utf8");
-//     console.log(notesData);
-//     notesData = JSON.parse(notData);
-//     req.body.id = notesData.length;
-//     notesData.push(req.body);
-//     notesData = JSON.stringify(notesData);
-//     fs.writeFile("./db/db.json", notesData, "utf8", function (err) {
-//       if (err) throw err;
-//     });
-//     res.json(JSON.parse(notesData));
+//   try {
+//   notesData = fs.readFile("./db/db.json", "utf-8");
+//   // console.log(notesData);
+//   notesData = JSON.parse(notesData);
+//   req.body.id = notesData.length;
+//   notesData.push(req.body);
+//   notesData = JSON.stringify(notesData);
+//   fs.writeFile("./db/db.json", notesData, "utf8", function (err) {
+//     if (err) throw err;
+//   });
+//   res.json(JSON.parse(notesData));
 //   // }
 //   // catch (err) {
-//     // throw err;
+//   // throw err;
 //   // }
 // });
 
+// Starts the server to begin listening
 app.listen(PORT, function () {
   console.log(`Server Listening on http://localhost:${PORT}`);
 });
