@@ -49,7 +49,34 @@ app.get("/notes", function (req, res) {
 // Starts the server to begin listening
 
 app.post("api/notes", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
+  fs.readFile("./db/db.json", "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).json({
+        error: true,
+        data: null,
+        message: "Unable to retrieve note.",
+      });
+    }
+    // console.log(data);
+    const updatedData = JSON.parse(data);
+    updatedData.push(req.body);
+    // console.log(updatedData);
+    fs.writeFile("./db/db.json", JSON.stringify(updatedData), (err) => {
+      if (err) {
+        return res.status(500).json({
+          error: true,
+          data: null,
+          message: "Unable to save new note.",
+        });
+      }
+      res.json({
+        error: false,
+        data: updatedData,
+        message: "Successfully added new note.",
+      });
+    });
+  });
 });
 
 // app.post("/api/notes", function (req, res) {
