@@ -28,23 +28,23 @@ app.get("/notes", function (req, res) {
 //   return res.sendFile(path.join(__dirname, "db/db.json"));
 // });
 
-// app.get("/api/notes", (req, res) => {
-//   fs.readFile("db/db.json", "utf-8", (err, data) => {
-//     if (err) {
-//       console.log(err);
-//       return res.status(500).json({
-//         error: true,
-//         data: null,
-//         messages: "Unable to retrieve note.",
-//       });
-//     }
-//     res.json({
-//       error: false,
-//       data: JSON.parse(data),
-//       messages: "Successfully retrieved note.",
-//     });
-//   });
-// });
+app.get("/api/notes", (req, res) => {
+  fs.readFile("db/db.json", "utf-8", (err, data) => {
+    if (err) {
+      //       console.log(err);
+      return res.status(500).json({
+        error: true,
+        data: null,
+        messages: "Unable to retrieve note.",
+      });
+    }
+    res.json({
+      error: false,
+      data: JSON.parse(data),
+      messages: "Successfully retrieved note.",
+    });
+  });
+});
 
 // Starts the server to begin listening
 
