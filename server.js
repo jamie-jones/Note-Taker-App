@@ -33,7 +33,7 @@ app.listen(PORT, function () {
 });
 
 app.post("/api/notes", function (req, res) {
-  try {
+  // try {
     notesData = fs.readFileSync("./db/db.json", "utf8");
     console.log(notesData);
     notesData = JSON.parse(notData);
@@ -44,7 +44,10 @@ app.post("/api/notes", function (req, res) {
       if (err) throw err;
     });
     res.json(JSON.parse(notesData));
-  } catch (err) {
-    throw err;
-  }
+  // } 
+  // catch (err) {
+    // throw err;
+  // }
 });
+
+app.delete("/api/notes", function)
