@@ -20,6 +20,10 @@ Do you need a good daily planner? How about somewhere you can take notes on your
 
 \*[Questions](#Questions)
 
+## LAYOUT
+
+![Note-Taker](./assets/note-taker.png "Note Taker Application")
+
 ## INSTALLATION
 
 Installation not needed! Just open the application up with Heroku and be on your way!
