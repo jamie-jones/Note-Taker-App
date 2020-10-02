@@ -1,8 +1,10 @@
 const fs = require("fs");
 const express = require("express");
 const path = require("path");
-
+const db = require("./db/db.json");
 const app = express();
+let newId = 1;
+
 const PORT = process.env.PORT || 8080;
 
 // Sets up the Express app to handle data parsing
@@ -12,47 +14,45 @@ app.use(express.static("public"));
 
 // Basic route that sends the user first to the AJAX Page
 app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 
 app.get("/notes", function (req, res) {
-  res.sendFile(path.join(__dirname, "public", "notes.html"));
+  res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
 // API ROUTES
 app.get("/api/notes", (req, res) => {
-  return res.sendFile(path.join(__dirname, "db/db.json"));
+  res.json(db);
+  // return res.sendFile(path.join(__dirname, "db/db.json"));
 });
 
 // APP.POST
 app.post("/api/notes", (req, res) => {
   try {
-    writtenNotes = fs.readFileSync("./db/db.json", "utf-8");
-    writtenNotes = JSON.parse(writtenNotes);
-    req.body.id = writtenNotes.length;
-    writtenNotes.push(req.body);
-    writtenNotes = JSON.stringify(writtenNotes);
-    fs.writeFile("./db/db.json", writtenNotes, "utf-8", (err) => {
-      if (err) throw err;
-    });
-    res.json(JSON.parse(writtenNotes));
+    const writtenNotes = req.body;
+    for (i = 0; i < db.length; i++) {
+      newId++;
+    }
+    writtenNotes.id = newId;
+    db.push(req.body);
+    fs.writeFile(
+      path.join(__dirname, "./db/db.json"),
+      JSON.stringify(db),
+      function (err) {
+        if (err) throw err;
+      }
+    );
+    res.json(req.body);
   } catch (err) {
     throw err;
   }
 });
 
-app.delete("/app/notes/:id", (req, res) => {
+app.delete("/api/notes/:id", (req, res) => {
   try {
-    writtenData = fs.readFileSync("./db/db.json", "utf-8");
-    writtenData = JSON.parse(writtenData);
-    writtenData = writtenData.filter((note) => {
-      return note.id != req.params.id;
-    });
-    writtenData = JSON.stringify(writtenNotes);
-    fs.writeFile("./db/db.json", writtenData, "utf-8", (err) => {
-      if (err) throw err;
-    });
-    res.send(JSON.parse(writtenNotes));
+    const currentId = db.pop(req.params.id);
+    res.json(req.body);
   } catch (err) {
     throw err;
   }
@@ -60,5 +60,5 @@ app.delete("/app/notes/:id", (req, res) => {
 
 // Starts the server to begin listening
 app.listen(PORT, () => {
-  console.log(`Server Listening on PORT: ${PORT}`);
+  console.log(`Server Listening on ${PORT}`);
 });
